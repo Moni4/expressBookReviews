@@ -5,39 +5,57 @@ let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
 
-public_users.post("/register", (req,res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+public_users.post("/register", (req, res) => {
+    //Write your code here
+    return res.status(300).json({ message: "Yet to be implemented" });
 });
 
 // Get the book list available in the shop
-public_users.get('/',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+public_users.get('/', function (req, res) {
+    //Write your code here
+    // Send JSON response with formatted friends data
+    return res.send(JSON.stringify(books, null, 4));
 });
 
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
- });
-  
+public_users.get('/isbn/:isbn', function (req, res) {
+    //Write your code here
+    const isbn = req.params.isbn;
+    return res.send(books[isbn]);
+});
+
 // Get book details based on author
-public_users.get('/author/:author',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+public_users.get('/author/:author', function (req, res) {
+    //Write your code here
+    const author = req.params.author;
+    for (let [key, value] of Object.entries(books)) {
+        console.log(value.author);
+        if(author === value.author) {
+            return res.send(value)
+        }
+    }
+    return res.status(200).json({ message: "Author not found" });
 });
 
 // Get all books based on title
-public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+public_users.get('/title/:title', function (req, res) {
+    //Write your code here
+    const title = req.params.title;
+    for (let [key, value] of Object.entries(books)) {
+        console.log(value.title);
+        if(title === value.title) {
+            return res.send(value)
+        }
+    }
+    return res.status(200).json({ message: "Title not found" });
 });
 
 //  Get book review
-public_users.get('/review/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+public_users.get('/review/:isbn', function (req, res) {
+    //Write your code here
+    const isbn = req.params.isbn;
+    res.send(books[isbn].reviews);
+    return res.status(300).json({ message: "Yet to be implemented" });
 });
 
 module.exports.general = public_users;
