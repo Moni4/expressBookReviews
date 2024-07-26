@@ -38,45 +38,95 @@ public_users.post("/register", (req, res) => {
     return res.status(404).json({ message: "Unable to register user." });
 });
 
-// Get the book list available in the shop
+// // Get the book list available in the shop
+// public_users.get('/', function (req, res) {
+//     //Write your code here
+//     // Send JSON response with formatted friends data
+//     return res.send(JSON.stringify(books, null, 4));
+// });
+
+// Get all books
+let getBooksPromise = new Promise((resolve, reject) => {
+    resolve(books);
+});
 public_users.get('/', function (req, res) {
     //Write your code here
-    // Send JSON response with formatted friends data
-    return res.send(JSON.stringify(books, null, 4));
+    getBooksPromise.then((result) => {
+        return res.status(200).json(JSON.stringify({ books: result }));
+    }
+    );
 });
+
 
 // Get book details based on ISBN
+let getBookByISBN = (isbn) => {
+    return new Promise((resolve, reject) => {
+        resolve(books[isbn]);
+    });
+}
 public_users.get('/isbn/:isbn', function (req, res) {
     //Write your code here
-    const isbn = req.params.isbn;
-    return res.send(books[isbn]);
+    getBookByISBN(req.params.isbn).then((result) => {
+        return res.status(200).json(JSON.stringify({ books: result }));
+    }
+    );
 });
+// public_users.get('/isbn/:isbn', function (req, res) {
+//     //Write your code here
+//     const isbn = req.params.isbn;
+//     return res.send(books[isbn]);
+// });
 
 // Get book details based on author
+let getBookByAuthor = (author) => {
+    return new Promise((resolve, reject) => {
+        var resulted = Object.values(books).filter(book => book.author == author);
+        resolve(resulted);
+    });
+}
 public_users.get('/author/:author', function (req, res) {
     //Write your code here
-    const author = req.params.author;
-    for (let [key, value] of Object.entries(books)) {
-        console.log(value.author);
-        if (author === value.author) {
-            return res.send(value)
-        }
+    getBookByAuthor(req.params.author).then((result) => {
+        return res.status(200).json(JSON.stringify({ books: result }));
     }
-    return res.status(200).json({ message: "Author not found" });
+    );
 });
+// public_users.get('/author/:author', function (req, res) {
+//     //Write your code here
+//     const author = req.params.author;
+//     for (let [key, value] of Object.entries(books)) {
+//         console.log(value.author);
+//         if (author === value.author) {
+//             return res.send(value)
+//         }
+//     }
+//     return res.status(200).json({ message: "Author not found" });
+// });
 
 // Get all books based on title
+let getBookByTitle = (title) => {
+    return new Promise((resolve, reject) => {
+        var resulted = Object.values(books).filter(book => book.title == title);
+        resolve(resulted);
+    });
+}
 public_users.get('/title/:title', function (req, res) {
     //Write your code here
-    const title = req.params.title;
-    for (let [key, value] of Object.entries(books)) {
-        console.log(value.title);
-        if (title === value.title) {
-            return res.send(value)
-        }
-    }
-    return res.status(200).json({ message: "Title not found" });
+    getBookByTitle(req.params.title).then((result) => {
+        return res.status(200).json(JSON.stringify({ books: result }));
+    });
 });
+// public_users.get('/title/:title', function (req, res) {
+//     //Write your code here
+//     const title = req.params.title;
+//     for (let [key, value] of Object.entries(books)) {
+//         console.log(value.title);
+//         if (title === value.title) {
+//             return res.send(value)
+//         }
+//     }
+//     return res.status(200).json({ message: "Title not found" });
+// });
 
 //  Get book review
 public_users.get('/review/:isbn', function (req, res) {
